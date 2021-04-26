@@ -10,13 +10,19 @@ public class Uimanager : MonoBehaviour
     [SerializeField] private Animator restartBtnAnimator;
     [SerializeField] private Animator winPanelAnimator;
 
+    [SerializeField] private GameController _gameController;
+
     [SerializeField] private Text WinCoinsText;
     [SerializeField] private Text coinsCount;
     [SerializeField] private Text timer;
+    [SerializeField] private Text racePos;
+
+    [SerializeField] private Text[] leaderboardPositions;
 
     private int coins;
     void Start()
     {
+        //racePos.enabled = false;
         timer.text = "Tap To Play";
     }
 
@@ -34,9 +40,9 @@ public class Uimanager : MonoBehaviour
         coins++;
         coinsCount.text = coins + "";
     }
-    public void ShowWinPanel()
+    public void ShowWinPanel(int mnozhitel)
     {
-        WinCoinsText.text = WinCoinsText.text + coins+" coins";
+        WinCoinsText.text = WinCoinsText.text + coins+" coins"+" x"+mnozhitel;
         winPanelAnimator.enabled = true;
     }
     public void ShowRestartButton()
@@ -48,7 +54,30 @@ public class Uimanager : MonoBehaviour
         Time.timeScale = 1;
         SceneManager.LoadScene("SampleScene");
     }
+    public void UpdateRacePosition(int pos)
+    {
+        switch(pos)
+        {
+            case 1: racePos.enabled = true; racePos.text = "1st";break;
+            case 2: racePos.enabled = true; racePos.text = "2nd";break;
+            case 3: racePos.enabled = true; racePos.text = "3rd";break;
+            case 4: racePos.enabled = true; racePos.text = "4th";break;
+            case 5: racePos.enabled = true; racePos.text = "5th";break;
+            case 0: racePos.enabled = false;break;
+        }
+    }
 
+    public void UpdateLeaderBoard(int pos,string _name)
+    {
+        switch (pos)
+        {
+            case 1: leaderboardPositions[0].text = "1."+_name; break;
+            case 2: leaderboardPositions[1].text = "2." + _name; break;
+            case 3: leaderboardPositions[2].text = "3." + _name; break;
+            case 4: leaderboardPositions[3].text = "4." + _name; break;
+            case 5: leaderboardPositions[4].text = "5." + _name; break;
+        }
+    }
     private IEnumerator Timer()
     {
         for(int i = 0;i<3;i++)
@@ -57,5 +86,6 @@ public class Uimanager : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
         timer.enabled = false;
+        _gameController.gamestarted = true;
     }
 }
