@@ -13,6 +13,8 @@ public class Uimanager : MonoBehaviour
     [SerializeField] private GameController _gameController;
 
     [SerializeField] private Text WinCoinsText;
+    [SerializeField] private Text WinText;
+
     [SerializeField] private Text coinsCount;
     [SerializeField] private Text timer;
     [SerializeField] private Text racePos;
@@ -43,6 +45,12 @@ public class Uimanager : MonoBehaviour
     public void ShowWinPanel(int mnozhitel)
     {
         WinCoinsText.text = WinCoinsText.text + coins+" coins"+" x"+mnozhitel;
+        winPanelAnimator.enabled = true;
+    }
+    public void ShowLosePanel()
+    {
+        WinText.text = "You Lose!";
+        WinCoinsText.text = WinCoinsText.text + coins + " coins";
         winPanelAnimator.enabled = true;
     }
     public void ShowRestartButton()

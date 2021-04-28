@@ -5,14 +5,16 @@ using Dreamteck.Splines;
 
 public class EnemyController : MonoBehaviour
 {
-    private float speed = 5f;
+    [SerializeField]private float speed = 5f;
     private float _platformCount = 0;
     private float prevPosY = 0;
 
     private float boundX;
     private float boundZ;
+    private float StartBalonScale;
 
     private bool stopped = true;
+    private bool translate = false;
     private bool grounded = true;
 
     private Rigidbody _rigidbody;
@@ -34,6 +36,7 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartBalonScale = balonMid.localScale.y;
         boundX = this.GetComponent<Collider>().bounds.size.x;
         boundZ = this.GetComponent<Collider>().bounds.size.z;
         _rigidbody = GetComponent<Rigidbody>();
@@ -51,10 +54,8 @@ public class EnemyController : MonoBehaviour
 
         if (transform.position.y < -2f)
             Destroy(this.gameObject);
-
-        //if (!stopped)
-            //transform.Translate(speed * Time.fixedDeltaTime, 0, 0);
-
+        if (translate)
+            transform.Translate(0, 0, 10f*Time.fixedDeltaTime);
         UpdateGroundedAndStopped(_leftLayer, _rightLayer);
 
         prevPosY = transform.position.y;
@@ -105,18 +106,21 @@ public class EnemyController : MonoBehaviour
         obj.transform.position = new Vector3(transform.position.x, -0.17f, transform.position.z);
         obj.transform.rotation = transform.rotation;
         obj.transform.Rotate(0, 90, 0);//govnokod
-        _platformCount -= 0.25f;
+        _platformCount -= 0.5f;
         UpdateBalonScale(_platformCount);
     }
     private void Jump()
     {
+        _rigidbody.useGravity = true;
+        splines[0].follow = false;
+        translate = true;
         _rigidbody.AddForce(0, 300, 0);
         enemyAnimator.SetBool("grounded", false);
     }
     private int CheckLeftLayerUnderEnemy()
     {
         RaycastHit hitLeft;
-        Physics.Linecast(transform.position, new Vector3(transform.position.x + boundX / 2, transform.position.y - 1f, transform.position.z + boundZ / 2), out hitLeft);
+        Physics.Linecast(new Vector3(transform.position.x,transform.position.y+1f,transform.position.z), new Vector3(transform.position.x + boundX / 2, transform.position.y - 1f, transform.position.z + boundZ / 2), out hitLeft);
         if (hitLeft.collider != null)
             return hitLeft.collider.gameObject.layer;
         else return -1;
@@ -124,7 +128,7 @@ public class EnemyController : MonoBehaviour
     private int CheckRightLayerUnderEnemy()
     {
         RaycastHit hitRight;
-        Physics.Linecast(transform.position, new Vector3(transform.position.x - boundX / 2, transform.position.y - 1f, transform.position.z - boundZ / 2), out hitRight);
+        Physics.Linecast(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z), new Vector3(transform.position.x - boundX / 2, transform.position.y - 1f, transform.position.z - boundZ / 2), out hitRight);
         if (hitRight.collider != null)
             return hitRight.collider.gameObject.layer;
         else return -1;
@@ -138,7 +142,7 @@ public class EnemyController : MonoBehaviour
         { balonMid.gameObject.SetActive(true); }
         else
         {
-            balonMid.localScale = new Vector3(balonMid.localScale.x, 0.05f * platformCount, balonMid.localScale.z);
+            balonMid.localScale = new Vector3(balonMid.localScale.x, StartBalonScale * platformCount, balonMid.localScale.z);
             balonMid.position = new Vector3(balonMid.position.x, 1 + platformCount * 0.03f, balonMid.position.z);
             balonUp.localScale = new Vector3(balonUp.localScale.x, 200f / platformCount, balonUp.localScale.z);
             balonDown.localScale = new Vector3(balonUp.localScale.x, 200f / platformCount, balonUp.localScale.z);
@@ -163,7 +167,7 @@ public class EnemyController : MonoBehaviour
         enemyAnimator.SetBool("isRun", true);
         stopped = false;
         splines[0].follow = true;
-        splines[0].followSpeed = 5f;
+        splines[0].followSpeed = speed;
     }
     private void OnTriggerExit(Collider other)
     {

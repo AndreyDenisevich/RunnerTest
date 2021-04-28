@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    private float speed = 5f;
+    private float speed = 10f;
     private float sens = 2f;
     private float boundX;
     private float boundZ;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int waterLayer;
     [SerializeField] private int groundLayer;
 
-    private float platformCount = 8;
+    private float platformCount = 0;
     
     void Start()
     {
@@ -65,10 +65,10 @@ public class PlayerController : MonoBehaviour
 
         prevPosY = transform.position.y;
 
-        if(!stopped&&mouseDrag)
+      /* if(!stopped&&mouseDrag)
         {
-            transform.Rotate(0, 6*sens * (Input.mousePosition.x-prevMousePos.x) * Time.fixedDeltaTime, 0);
-        }
+            transform.Rotate(0, 6 * sens * (Input.mousePosition.x - prevMousePos.x) * Time.fixedDeltaTime, 0);
+        }*/
         prevMousePos = Input.mousePosition;
         if (!stopped && Input.touchCount > 0)
         {
@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
         obj.transform.position = new Vector3(transform.position.x, -0.17f, transform.position.z);
         obj.transform.rotation = transform.rotation;
         obj.transform.Rotate(0, 90, 0);//govnokod
-        platformCount-=0.25f;
+        platformCount-=0.5f;
         
         _gameController.UpdateBalonScale(platformCount);
         _gameController.SmokeUnderPlayer();
@@ -189,7 +189,7 @@ public class PlayerController : MonoBehaviour
             stopped = true;
             playerAnimator.SetBool("isRun", false);
             
-            transform.position = new Vector3(17.5f, transform.position.y, 71f);
+            //transform.position = new Vector3(7.5f, transform.position.y,102f);
             Quaternion rot = transform.rotation;
             rot.eulerAngles = new Vector3(rot.eulerAngles.x, -90f, rot.eulerAngles.z);
             transform.rotation = rot;

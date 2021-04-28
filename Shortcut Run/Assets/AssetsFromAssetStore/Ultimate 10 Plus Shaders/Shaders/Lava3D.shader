@@ -100,7 +100,7 @@ Shader "Ultimate 10+ Shaders/Lava3D"
 
         fixed4 texPixel;
         void vert (inout appdata vert){
-            texPixel = tex2Dlod(_HeightMap, vert.texcoord1 + _FlowDirection * fmod(_Time.y, 1200) * _Speed);
+            texPixel = tex2Dlod(_HeightMap, vert.texcoord1 + _FlowDirection * fmod(_Time.y, 1200)*_Speed);
             vert.vertex.y = texPixel.r * _Amplitude;
         }
         ENDCG
