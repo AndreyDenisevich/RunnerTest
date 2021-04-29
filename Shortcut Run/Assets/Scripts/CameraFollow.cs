@@ -22,8 +22,11 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.position = new Vector3(playerTransform.position.x + deltaPosX, transform.position.y, playerTransform.position.z + deltaPosZ);
-        rot.eulerAngles = new Vector3(rot.eulerAngles.x, playerTransform.rotation.eulerAngles.y + deltaRotationY, rot.eulerAngles.z);
-        transform.rotation = rot;
+        if (playerTransform != null)
+        {
+            transform.position = new Vector3(playerTransform.position.x + deltaPosX, transform.position.y, playerTransform.position.z + deltaPosZ);
+            rot.eulerAngles = new Vector3(rot.eulerAngles.x, playerTransform.rotation.eulerAngles.y + deltaRotationY, rot.eulerAngles.z);
+            transform.rotation = rot;
+        }
     }
 }

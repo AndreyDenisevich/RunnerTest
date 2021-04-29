@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    private float speed = 10f;
+    [SerializeField]private float speed = 10f;
     private float sens = 2f;
     private float boundX;
     private float boundZ;
@@ -65,10 +65,10 @@ public class PlayerController : MonoBehaviour
 
         prevPosY = transform.position.y;
 
-      /* if(!stopped&&mouseDrag)
+      if(!stopped&&mouseDrag)
         {
             transform.Rotate(0, 6 * sens * (Input.mousePosition.x - prevMousePos.x) * Time.fixedDeltaTime, 0);
-        }*/
+        }
         prevMousePos = Input.mousePosition;
         if (!stopped && Input.touchCount > 0)
         {

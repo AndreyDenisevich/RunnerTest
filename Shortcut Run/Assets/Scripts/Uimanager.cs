@@ -14,12 +14,16 @@ public class Uimanager : MonoBehaviour
 
     [SerializeField] private Text WinCoinsText;
     [SerializeField] private Text WinText;
+    [SerializeField] private Button nxtLevel;
+    [SerializeField] private Button restartLevel;
 
     [SerializeField] private Text coinsCount;
     [SerializeField] private Text timer;
     [SerializeField] private Text racePos;
 
     [SerializeField] private Text[] leaderboardPositions;
+
+    [SerializeField] private string[] levels;
 
     private int coins;
     void Start()
@@ -57,10 +61,22 @@ public class Uimanager : MonoBehaviour
     {
         restartBtnAnimator.enabled = true;
     }
+    public void NextLevel()
+    {
+        restartLevel.enabled = false;
+        for (int i = 0; i < levels.Length; i++)
+        {
+            if(levels[i]== SceneManager.GetActiveScene().name&&i+1<levels.Length)
+            {
+                SceneManager.LoadScene(levels[i + 1]);
+            }
+        }
+    }
     public void RestartGame()
     {
+        nxtLevel.enabled = false;
         Time.timeScale = 1;
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     public void UpdateRacePosition(int pos)
     {

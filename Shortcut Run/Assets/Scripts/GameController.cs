@@ -212,30 +212,30 @@ public class GameController : MonoBehaviour
                     camPosY = Mathf.Clamp(camPosY, downPosCam, 11f);
                 }
             }
-            /*if (mouseDrag)
+            if (mouseDrag)
             {
                 rotationY += 4f * (Input.mousePosition.x - prevMousePos.x) * Time.unscaledDeltaTime;
                 rotationX += -2f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
                 if (rotationX > -30f)
                 {
-                    camPosY += 0.05f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+                    camPosY += 4*0.05f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
                 }
                 if (rotationX <= -30f && rotationX > -45f)
                 {
-                    camPosY += 0.075f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+                    camPosY += 4*0.065f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
                 }
                 if (rotationX <= -30f && rotationX > -60f)
                 {
-                    camPosY += 0.095f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+                    camPosY += 4*0.085f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
                 }
                 if (rotationX <= -60f)
                 {
-                    camPosY += 0.105f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+                    camPosY += 4*0.1f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
                 }
                 camPosY = Mathf.Clamp(camPosY, downPosCam, 11f);
                 rotationY = Mathf.Clamp(rotationY, -leftRightRot, leftRightRot);
                 rotationX = Mathf.Clamp(rotationX, -65f, 0f);
-            }*/
+            }
 
             prevMousePos = Input.mousePosition;
             //rot = Quaternion.Lerp(startRot, endRot, progress);
