@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
             mouseDrag = true;
         if (Input.GetMouseButtonUp(0))
             mouseDrag = false;
+        _gameController.UpdateBalonScale(platformCount);
     }
 
     
@@ -134,7 +135,7 @@ public class PlayerController : MonoBehaviour
         obj.transform.Rotate(0, 90, 0);//govnokod
         platformCount-=0.5f;
         
-        _gameController.UpdateBalonScale(platformCount);
+        //_gameController.UpdateBalonScale(platformCount);
         _gameController.SmokeUnderPlayer();
     }
     private void Dead()
@@ -178,7 +179,7 @@ public class PlayerController : MonoBehaviour
         if(other.tag=="WaterCube")
         {
             platformCount++;
-            _gameController.UpdateBalonScale(platformCount);
+            //_gameController.UpdateBalonScale(platformCount);
             Destroy(other.gameObject);
         }
     }

@@ -28,7 +28,9 @@ public class Uimanager : MonoBehaviour
     private int coins;
     void Start()
     {
-        //racePos.enabled = false;
+        string sceneName = PlayerPrefs.GetString("CurrentLevel");
+        if (sceneName != SceneManager.GetActiveScene().name)
+            SceneManager.LoadScene(sceneName);
         timer.text = "Tap To Play";
     }
 
@@ -64,12 +66,37 @@ public class Uimanager : MonoBehaviour
     public void NextLevel()
     {
         restartLevel.enabled = false;
-        for (int i = 0; i < levels.Length; i++)
+        if (PlayerPrefs.GetInt("Randomize") == 0)
         {
-            if(levels[i]== SceneManager.GetActiveScene().name&&i+1<levels.Length)
+            if (SceneManager.GetActiveScene().buildIndex != SceneManager.sceneCountInBuildSettings - 1)
             {
-                SceneManager.LoadScene(levels[i + 1]);
+                int level = SceneManager.GetActiveScene().buildIndex + 2;
+                PlayerPrefs.SetString("CurrentLevel", level.ToString());
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
+            else
+            {
+                PlayerPrefs.SetInt("Randomize", 1);
+                string level;
+                do
+                {
+                    level = Random.Range(1, SceneManager.sceneCountInBuildSettings).ToString();
+                }
+                while (level == SceneManager.GetActiveScene().name);
+                PlayerPrefs.SetString("CurrentLevel", level);
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+        else
+        {
+            string level;
+            do
+            {
+                level = Random.Range(1, SceneManager.sceneCountInBuildSettings).ToString();
+            }
+            while (level == SceneManager.GetActiveScene().name);
+            PlayerPrefs.SetString("CurrentLevel", level);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
     public void RestartGame()
@@ -111,5 +138,9 @@ public class Uimanager : MonoBehaviour
         }
         timer.enabled = false;
         _gameController.gamestarted = true;
+    }
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetString("CurrentLevel", SceneManager.GetActiveScene().name);
     }
 }

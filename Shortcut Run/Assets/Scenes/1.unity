@@ -457,7 +457,9 @@ PrefabInstance:
       propertyPath: _audioController
       value: 
       objectReference: {fileID: 25369272}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 755499169962594800, guid: 9a6fffc3467836448bb3c915531f37a7, type: 3}
+    - {fileID: 755499170449483332, guid: 9a6fffc3467836448bb3c915531f37a7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9a6fffc3467836448bb3c915531f37a7, type: 3}
 --- !u!1001 &1563333599619752044
 PrefabInstance:
@@ -907,7 +909,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemies
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8670278840398755259, guid: aede1d79979f16546b277401f5bfa689, type: 3}
+    - {fileID: 8670278840724495768, guid: aede1d79979f16546b277401f5bfa689, type: 3}
+    - {fileID: 8670278841356950779, guid: aede1d79979f16546b277401f5bfa689, type: 3}
+    - {fileID: 8670278840267712898, guid: aede1d79979f16546b277401f5bfa689, type: 3}
+    - {fileID: 8670278841209242256, guid: aede1d79979f16546b277401f5bfa689, type: 3}
+    - {fileID: 8670278842204065231, guid: aede1d79979f16546b277401f5bfa689, type: 3}
+    - {fileID: 8670278840372405044, guid: aede1d79979f16546b277401f5bfa689, type: 3}
+    - {fileID: 8670278841015929977, guid: aede1d79979f16546b277401f5bfa689, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aede1d79979f16546b277401f5bfa689, type: 3}
 --- !u!1001 &8976853853306331177
 PrefabInstance:

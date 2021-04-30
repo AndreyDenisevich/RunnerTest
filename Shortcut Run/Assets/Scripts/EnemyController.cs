@@ -45,7 +45,8 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        UpdateBalonScale(_platformCount);
+
     }
     void FixedUpdate()
     {
@@ -107,7 +108,7 @@ public class EnemyController : MonoBehaviour
         obj.transform.rotation = transform.rotation;
         obj.transform.Rotate(0, 90, 0);//govnokod
         _platformCount -= 0.5f;
-        UpdateBalonScale(_platformCount);
+        //UpdateBalonScale(_platformCount);
     }
     private void Jump()
     {
@@ -153,7 +154,7 @@ public class EnemyController : MonoBehaviour
         if (other.tag == "WaterCube")
         {
             _platformCount++;
-            UpdateBalonScale(_platformCount);
+            //UpdateBalonScale(_platformCount);
             Destroy(other.gameObject);
         }
     }

@@ -4970,7 +4970,9 @@ PrefabInstance:
       propertyPath: _audioController
       value: 
       objectReference: {fileID: 61724979}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 755499169962594800, guid: 9a6fffc3467836448bb3c915531f37a7, type: 3}
+    - {fileID: 755499170449483332, guid: 9a6fffc3467836448bb3c915531f37a7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9a6fffc3467836448bb3c915531f37a7, type: 3}
 --- !u!1 &166499750
 GameObject:
@@ -51065,7 +51067,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _uiManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1712837746}
     - target: {fileID: 4186177269249638746, guid: 955b3102ffe8d614e8fce9868ba12fb1,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -51941,19 +51943,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &8670278840159026008
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670278840159026014}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &8670278840159026009
 Transform:
   m_ObjectHideFlags: 0
@@ -52028,7 +52017,6 @@ GameObject:
   - component: {fileID: 8670278840159026009}
   - component: {fileID: 8670278840159026010}
   - component: {fileID: 8670278840159026011}
-  - component: {fileID: 8670278840159026008}
   m_Layer: 10
   m_Name: Palka
   m_TagString: Untagged
@@ -52383,7 +52371,6 @@ GameObject:
   - component: {fileID: 8670278840188547567}
   - component: {fileID: 8670278840188547560}
   - component: {fileID: 8670278840188547561}
-  - component: {fileID: 8670278840188547566}
   m_Layer: 10
   m_Name: Palka (1)
   m_TagString: Untagged
@@ -52391,19 +52378,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &8670278840188547566
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670278840188547564}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &8670278840188547567
 Transform:
   m_ObjectHideFlags: 0
@@ -53568,19 +53542,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8670278840564590433
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670278840564590439}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &8670278840564590435
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -53614,7 +53575,6 @@ GameObject:
   - component: {fileID: 8670278840564590438}
   - component: {fileID: 8670278840564590435}
   - component: {fileID: 8670278840564590432}
-  - component: {fileID: 8670278840564590433}
   m_Layer: 10
   m_Name: Palka (1)
   m_TagString: Untagged
@@ -53881,39 +53841,7 @@ MonoBehaviour:
     keys: []
   _offsetModifier:
     blend: 1
-    keys:
-    - _featherStart: 0
-      _featherEnd: 0.10000000149011612
-      _centerStart: 0.25
-      _centerEnd: 0.75
-      modifier:
-        blend: 1
-      interpolation:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 1
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 1
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      blend: 1
-      offset: {x: 0, y: 0.5}
+    keys: []
   _colorModifier:
     blend: 1
     keys: []
@@ -55236,7 +55164,7 @@ MonoBehaviour:
   _finalResult:
     position: {x: 5.825727, y: 0, z: -129.74176}
     up: {x: 0, y: 1, z: 0}
-    forward: {x: 0.166106, y: 0, z: 0.98610795}
+    forward: {x: 0.18844317, y: 0, z: 0.9820841}
     color: {r: 1, g: 1, b: 1, a: 1}
     size: 1
     percent: 0
@@ -55295,7 +55223,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8670278840665376373}
-  m_LocalRotation: {x: -0, y: 0.763579, z: -0, w: 0.64571434}
+  m_LocalRotation: {x: -0, y: 0.77085775, z: -0, w: 0.6370074}
   m_LocalPosition: {x: -28.711773, y: 6, z: -57.995724}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -55924,7 +55852,6 @@ GameObject:
   - component: {fileID: 8670278840876371779}
   - component: {fileID: 8670278840876371900}
   - component: {fileID: 8670278840876371901}
-  - component: {fileID: 8670278840876371778}
   m_Layer: 10
   m_Name: Palka
   m_TagString: Untagged
@@ -55932,19 +55859,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &8670278840876371778
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670278840876371776}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &8670278840876371779
 Transform:
   m_ObjectHideFlags: 0
@@ -56801,7 +56715,6 @@ GameObject:
   - component: {fileID: 8670278841122070176}
   - component: {fileID: 8670278841122070173}
   - component: {fileID: 8670278841122070178}
-  - component: {fileID: 8670278841122070179}
   m_Layer: 10
   m_Name: Palka
   m_TagString: Untagged
@@ -56850,19 +56763,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8670278841122070179
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670278841122070177}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &8670278841122165021
 Transform:
   m_ObjectHideFlags: 0
@@ -57387,19 +57287,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8670278841183702561
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670278841183702567}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &8670278841183702563
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -57433,7 +57320,6 @@ GameObject:
   - component: {fileID: 8670278841183702566}
   - component: {fileID: 8670278841183702563}
   - component: {fileID: 8670278841183702560}
-  - component: {fileID: 8670278841183702561}
   m_Layer: 10
   m_Name: Palka (1)
   m_TagString: Untagged
@@ -57939,7 +57825,6 @@ GameObject:
   - component: {fileID: 8670278841364729931}
   - component: {fileID: 8670278841364729924}
   - component: {fileID: 8670278841364729925}
-  - component: {fileID: 8670278841364729930}
   m_Layer: 10
   m_Name: Palka (1)
   m_TagString: Untagged
@@ -57947,19 +57832,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &8670278841364729930
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670278841364729928}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &8670278841364729931
 Transform:
   m_ObjectHideFlags: 0
@@ -63252,19 +63124,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8670278842114711317
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670278842114711323}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &8670278842114711319
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -63298,7 +63157,6 @@ GameObject:
   - component: {fileID: 8670278842114711322}
   - component: {fileID: 8670278842114711319}
   - component: {fileID: 8670278842114711316}
-  - component: {fileID: 8670278842114711317}
   m_Layer: 10
   m_Name: Palka
   m_TagString: Untagged
