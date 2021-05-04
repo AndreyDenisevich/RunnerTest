@@ -14,8 +14,9 @@ public class Uimanager : MonoBehaviour
 
     [SerializeField] private Text WinCoinsText;
     [SerializeField] private Text WinText;
-    [SerializeField] private Button nxtLevel;
-    [SerializeField] private Button restartLevel;
+
+    [SerializeField] private GameObject nxtLevel;
+    [SerializeField] private GameObject restartLevel;
 
     [SerializeField] private Text coinsCount;
     [SerializeField] private Text timer;
@@ -50,11 +51,13 @@ public class Uimanager : MonoBehaviour
     }
     public void ShowWinPanel(int mnozhitel)
     {
+        restartLevel.SetActive(false);
         WinCoinsText.text = WinCoinsText.text + coins+" coins"+" x"+mnozhitel;
         winPanelAnimator.enabled = true;
     }
     public void ShowLosePanel()
     {
+        nxtLevel.SetActive(false);
         WinText.text = "You Lose!";
         WinCoinsText.text = WinCoinsText.text + coins + " coins";
         winPanelAnimator.enabled = true;
@@ -65,7 +68,7 @@ public class Uimanager : MonoBehaviour
     }
     public void NextLevel()
     {
-        restartLevel.enabled = false;
+        
         if (PlayerPrefs.GetInt("Randomize") == 0)
         {
             if (SceneManager.GetActiveScene().buildIndex != SceneManager.sceneCountInBuildSettings - 1)
@@ -101,7 +104,7 @@ public class Uimanager : MonoBehaviour
     }
     public void RestartGame()
     {
-        nxtLevel.enabled = false;
+        
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

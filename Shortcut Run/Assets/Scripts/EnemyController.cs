@@ -13,8 +13,7 @@ public class EnemyController : MonoBehaviour
     private float boundZ;
     private float StartBalonScale;
 
-    private bool stopped = true;
-    private bool translate = false;
+    private bool stopped = false;
     private bool grounded = true;
 
     private Rigidbody _rigidbody;
@@ -55,8 +54,6 @@ public class EnemyController : MonoBehaviour
 
         if (transform.position.y < -2f)
             Destroy(this.gameObject);
-        if (translate)
-            transform.Translate(0, 0, 10f*Time.fixedDeltaTime);
         UpdateGroundedAndStopped(_leftLayer, _rightLayer);
 
         prevPosY = transform.position.y;
@@ -106,15 +103,12 @@ public class EnemyController : MonoBehaviour
         GameObject obj = Instantiate(platformPrefab) as GameObject;
         obj.transform.position = new Vector3(transform.position.x, -0.17f, transform.position.z);
         obj.transform.rotation = transform.rotation;
-        obj.transform.Rotate(0, 90, 0);//govnokod
         _platformCount -= 0.5f;
         //UpdateBalonScale(_platformCount);
     }
     private void Jump()
     {
         _rigidbody.useGravity = true;
-        splines[0].follow = false;
-        translate = true;
         _rigidbody.AddForce(0, 300, 0);
         enemyAnimator.SetBool("grounded", false);
     }
@@ -154,7 +148,6 @@ public class EnemyController : MonoBehaviour
         if (other.tag == "WaterCube")
         {
             _platformCount++;
-            //UpdateBalonScale(_platformCount);
             Destroy(other.gameObject);
         }
     }

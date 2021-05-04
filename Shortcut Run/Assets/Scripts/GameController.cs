@@ -17,18 +17,16 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform balonUp;
     [SerializeField] private Transform balonDown;
 
-    [SerializeField] private GameObject tower;
-
     [SerializeField] private Animator playerAnimator;
 
     [SerializeField] private EnemyController[] enemies;
-    [SerializeField] private Transform player;
+    [SerializeField] private PlayerController player;
     [SerializeField] private Transform finish;
 
     private int mnozhitel = 1;
 
     private Collider prevCol=null;
-    private int kol=31;
+    private int kol=0;
 
     private int racePosition;
 
@@ -37,12 +35,10 @@ public class GameController : MonoBehaviour
 
     private float StartBalonScale;
 
-    private bool gameStarted=false;
+    private bool gameStarted = false;
 
     private Camera mainCam;
     [SerializeField] private Transform cameraPivot;
-
-    [SerializeField] LayerMask fire;
 
     public bool gamestarted
     {
@@ -62,12 +58,20 @@ public class GameController : MonoBehaviour
             racePosition = 1;
             for (int i = 0; i < enemies.Length; i++)
             {
-                if (enemies[i]!=null&&enemies[i].transform.position.z > player.position.z)
+                if (enemies[i]!=null&&enemies[i].transform.position.z > player.transform.position.z)
                     racePosition++;
             }
         }
         else racePosition = 0;
         _uiManager.UpdateRacePosition(racePosition);
+    }
+    private void UpdateMouseDrag()
+    {
+        if (Input.GetMouseButtonDown(0))
+            mouseDrag = true;
+        else
+            if (Input.GetMouseButtonUp(0))
+            mouseDrag = false;
     }
     public void StartGame()
     {
@@ -97,35 +101,38 @@ public class GameController : MonoBehaviour
         gamestarted = false;
 
         cameraPivot.GetComponent<CameraFollow>().enabled = false;
-        Quaternion rot = cameraPivot.rotation;
-        rot.eulerAngles = new Vector3(rot.eulerAngles.x, -90f, rot.eulerAngles.z);
-        //player.position = new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z + 3f);
-        StartCoroutine(MovePlayer(new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z + 3f)));
-        cameraPivot.rotation = rot;
-        cameraPivot.position = new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z+2f);
+        SetCameraAndPlayerFinishTransform();
 
         if (platformCount > 0)
-        { StartCoroutine(WaterShlangRotation(platformCount)); }
+        {
+            StartCoroutine(BonusLevelController(platformCount));
+        }
         else
-        { _uiManager.ShowWinPanel(mnozhitel); PlayWinParticles(); playerAnimator.SetBool("win", true); }
+        {
+            BonusLevelEnd();
+        }
     }
     public void PlayerFinished()
     {
         gamestarted = false;
 
         cameraPivot.GetComponent<CameraFollow>().enabled = false;
-        Quaternion rot = cameraPivot.rotation;
-        rot.eulerAngles = new Vector3(rot.eulerAngles.x, -90f, rot.eulerAngles.z);
-        cameraPivot.rotation = rot;
-        //player.position = new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z + 2f);
-        StartCoroutine(MovePlayer(new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z + 2f)));
-        cameraPivot.position = new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z+2f);
+        SetCameraAndPlayerFinishTransform();
+
         _uiManager.ShowLosePanel(); 
     }
     private void PlayWinParticles()
     {
         for (int i = 0; i < winParticles.Length; i++)
         { winParticles[i].Play(); }
+    } 
+    void SetCameraAndPlayerFinishTransform()
+    {
+        Quaternion rot = cameraPivot.rotation;
+        rot.eulerAngles = new Vector3(rot.eulerAngles.x, -90f, rot.eulerAngles.z);
+        cameraPivot.rotation = rot;
+        StartCoroutine(MovePlayer(new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z + 2f)));
+        cameraPivot.position = new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z + 2f);
     }
     public void UpdateBalonScale(float platformCount)
     {
@@ -146,13 +153,54 @@ public class GameController : MonoBehaviour
     {
         smoke.Play();
     }
-    private IEnumerator WaterShlangRotation(float platforms)
+    void BonusLevelEnd()
+    {
+        _uiManager.ShowWinPanel(mnozhitel);
+        playerAnimator.SetBool("win", true);
+        PlayWinParticles();
+    }
+    private void RayCheck()
+    {
+        RaycastHit hit;
+        Physics.Raycast(new Vector3(waterShlang.transform.position.x, waterShlang.transform.position.y, waterShlang.transform.position.z), waterShlang.transform.forward, out hit);
+        if (hit.collider == prevCol&&hit.collider!=null)
+            kol++;
+        else kol = 0;
+        if(kol>=120&&hit.collider!=null&&hit.collider.transform.GetComponentInChildren<ParticleSystem>().isPlaying)
+        {
+            hit.collider.transform.GetComponentInChildren<ParticleSystem>().Stop();
+            mnozhitel++; 
+            kol = 0;
+        }
+        prevCol = hit.collider;
+    }
+    private float NewCamPos(float rotationX,float camPosY)
+    {
+        if (rotationX > -30f)
+        {
+            camPosY += 4 * 0.05f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+        }
+        if (rotationX <= -30f && rotationX > -45f)
+        {
+            camPosY += 4 * 0.065f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+        }
+        if (rotationX <= -30f && rotationX > -60f)
+        {
+            camPosY += 4 * 0.085f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+        }
+        if (rotationX <= -60f)
+        {
+            camPosY += 4 * 0.1f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+        }
+        return camPosY;
+    }
+    private IEnumerator BonusLevelController(float platforms)
     {
         Quaternion rot = waterShlang.transform.rotation;
 
         waterShlang.Play();
 
-        float leftRightRot = 40f;
+        float leftRightRot = 30f;
         float downPosCam = cameraPivot.position.y;
 
         float rotationY = 0f;
@@ -161,28 +209,16 @@ public class GameController : MonoBehaviour
         float startPlatforms = platforms;
         float endPlatforms = 0;
 
-        float _platform;
-        if (platforms <= 13)
-            _platform = platforms;
-        else _platform = 13;
-
-        float progress = 0, elapsedtime = 0;
-        float _duration = platforms/1.5f;
-
-        Quaternion startRot = waterShlang.transform.rotation;
-        Quaternion endRot = startRot;
-        endRot.eulerAngles = new Vector3(-5 * _platform, endRot.eulerAngles.y, endRot.eulerAngles.z);
-
-        Vector3 camStartPos = cameraPivot.position;
-        Vector3 camEndPos = camStartPos;
+        float elapsedtime = 0;
+        float _duration = platforms/2f;
+       
         float camPosY = cameraPivot.position.y;
 
         prevMousePos = Input.mousePosition;
-        while (progress<=1)
+        while (elapsedtime<_duration)
         {
             UpdateMouseDrag();
-            UpdateBalonScale((startPlatforms - endPlatforms) * (1 - progress));
-
+           
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
@@ -191,61 +227,37 @@ public class GameController : MonoBehaviour
                     Vector2 pos = touch.deltaPosition;
                     rotationX += -0.5f * pos.y * touch.deltaTime;
                     rotationY += 0.25f * pos.x * touch.deltaTime;
-                    if(rotationX>-30f)
-                    {
-                        camPosY += 0.05f * pos.y * touch.deltaTime;
-                    }
-                    if(rotationX<=-30f&& rotationX>-45f)
-                    {
-                        camPosY += 0.065f * pos.y * touch.deltaTime;
-                    }
-                    if (rotationX <= -30f && rotationX > -60f)
-                    {
-                        camPosY += 0.085f * pos.y * touch.deltaTime;
-                    }
-                    if (rotationX <= -60f)
-                    {
-                        camPosY += 0.1f * pos.y * touch.deltaTime;
-                    }
+
                     rotationY = Mathf.Clamp(rotationY, -leftRightRot, leftRightRot);
                     rotationX = Mathf.Clamp(rotationX, -65f, 0f);
+
+                    camPosY = NewCamPos(rotationX, camPosY);
                     camPosY = Mathf.Clamp(camPosY, downPosCam, 11f);
+                    
                 }
             }
             if (mouseDrag)
             {
                 rotationY += 4f * (Input.mousePosition.x - prevMousePos.x) * Time.unscaledDeltaTime;
                 rotationX += -2f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
-                if (rotationX > -30f)
-                {
-                    camPosY += 4*0.05f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
-                }
-                if (rotationX <= -30f && rotationX > -45f)
-                {
-                    camPosY += 4*0.065f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
-                }
-                if (rotationX <= -30f && rotationX > -60f)
-                {
-                    camPosY += 4*0.085f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
-                }
-                if (rotationX <= -60f)
-                {
-                    camPosY += 4*0.1f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
-                }
-                camPosY = Mathf.Clamp(camPosY, downPosCam, 11f);
+                
                 rotationY = Mathf.Clamp(rotationY, -leftRightRot, leftRightRot);
                 rotationX = Mathf.Clamp(rotationX, -65f, 0f);
+                
+                camPosY = NewCamPos(rotationX, camPosY);
+                camPosY = Mathf.Clamp(camPosY, downPosCam, 11f);
             }
 
             prevMousePos = Input.mousePosition;
-            //rot = Quaternion.Lerp(startRot, endRot, progress);
+
+            player.platforms = (startPlatforms - endPlatforms) * (1 - elapsedtime/_duration);
             rot.eulerAngles = new Vector3(rotationX,rotationY, rot.eulerAngles.z); 
             waterShlang.transform.rotation = rot;
 
             cameraPivot.position = new Vector3(cameraPivot.position.x, camPosY, cameraPivot.position.z);
             
             elapsedtime += Time.unscaledDeltaTime;
-            progress = elapsedtime / _duration;
+            
             RayCheck();
             yield return null;
         }
@@ -258,48 +270,24 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-       // waterShlang.transform.rotation = endRot;
         waterShlang.Stop();
-        _uiManager.ShowWinPanel(mnozhitel);
-        playerAnimator.SetBool("win", true);
-        PlayWinParticles();
+        BonusLevelEnd();
     }
-
-    private void RayCheck()
-    {
-        RaycastHit hit;
-        Physics.Raycast(new Vector3(waterShlang.transform.position.x, waterShlang.transform.position.y, waterShlang.transform.position.z), waterShlang.transform.forward, out hit);
-        if (hit.collider != null && hit.collider != prevCol)
-        {
-            mnozhitel++;
-            prevCol = hit.collider;
-            if (kol >= 30)
-            { hit.collider.transform.GetComponentInChildren<ParticleSystem>().Stop(); }
-            kol = 0;
-        }
-        else kol++;
-    }
-
-    private void UpdateMouseDrag()
-    {
-        if (Input.GetMouseButtonDown(0))
-            mouseDrag = true;
-        else
-            if (Input.GetMouseButtonUp(0))
-            mouseDrag = false;
-    }
+    
     private IEnumerator MovePlayer(Vector3 endPos)
     {
         float progress = 0, elapsedtime = 0;
         float _duration = 0.1f;
-        Vector3 startPos = player.position;
+        Vector3 startPos = player.transform.position;
         while (progress <= 1)
         {
-            player.position = Vector3.Lerp(startPos, endPos, progress);
+            player.transform.position = Vector3.Lerp(startPos, endPos, progress);
             elapsedtime += Time.unscaledDeltaTime;
             progress = elapsedtime / _duration;
             yield return null;
         }
-        player.position = endPos;
+        player.transform.position = endPos;
     }
+   
+   
 }

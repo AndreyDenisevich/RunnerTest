@@ -32,6 +32,10 @@ public class PlayerController : MonoBehaviour
 
     private float platformCount = 0;
     
+    public float platforms
+    {
+        set { platformCount = value; }
+    }
     void Start()
     {
         boundX = this.GetComponent<Collider>().bounds.size.x;
