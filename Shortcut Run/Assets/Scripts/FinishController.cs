@@ -12,16 +12,6 @@ public class FinishController : MonoBehaviour
         get { return _position; }
     }
     
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void Finished(string runnerName)
     {
         _uiManager.UpdateLeaderBoard(_position, runnerName);

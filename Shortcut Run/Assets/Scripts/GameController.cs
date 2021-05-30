@@ -7,15 +7,10 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] private ParticleSystem waterSplash;
     [SerializeField] private ParticleSystem waterShlang;
-    [SerializeField] private ParticleSystem smoke;
     [SerializeField] private ParticleSystem[] winParticles;
 
     [SerializeField] private Uimanager _uiManager;
     [SerializeField] private AudioController _audioController;
-
-    [SerializeField] private Transform balonMid;
-    [SerializeField] private Transform balonUp;
-    [SerializeField] private Transform balonDown;
 
     [SerializeField] private Animator playerAnimator;
 
@@ -23,19 +18,17 @@ public class GameController : MonoBehaviour
     [SerializeField] private PlayerController player;
     [SerializeField] private Transform finish;
 
+    private bool gameStarted = false;
+
     private int mnozhitel = 1;
 
     private Collider prevCol=null;
-    private int kol=0;
+    private float tushenieElapsedTime=0;
 
     private int racePosition;
 
     private bool mouseDrag = false;
     private Vector3 prevMousePos;
-
-    private float StartBalonScale;
-
-    private bool gameStarted = false;
 
     private Camera mainCam;
     [SerializeField] private Transform cameraPivot;
@@ -46,7 +39,6 @@ public class GameController : MonoBehaviour
     }
     void Start()
     {
-        StartBalonScale = balonMid.localScale.y;
         mainCam = Camera.main;
     }
 
@@ -58,7 +50,7 @@ public class GameController : MonoBehaviour
             racePosition = 1;
             for (int i = 0; i < enemies.Length; i++)
             {
-                if (enemies[i]!=null&&enemies[i].transform.position.z > player.transform.position.z)
+                if (enemies[i]!=null&&player!=null&&enemies[i].transform.position.z > player.transform.position.z)
                     racePosition++;
             }
         }
@@ -75,16 +67,15 @@ public class GameController : MonoBehaviour
     }
     public void StartGame()
     {
-        _uiManager.StartTimer();
+        player.StartGame();
         for(int i=0;i<enemies.Length;i++)
         {
             enemies[i].StartGame();
-
         }
     }
-    public void CoinCollected()
+    public void WaterCollected()
     {
-        _uiManager.AddCoin();
+        _uiManager.AddCoins();
     }
     public void PlayerDead()
     {
@@ -92,7 +83,11 @@ public class GameController : MonoBehaviour
         splash.transform.position=mainCam.transform.parent.position;
         splash.Play();
         _audioController.PlayWaterSplash();
-        Time.timeScale = 0.2f;
+        _uiManager.ShowRestartButton();
+        cameraPivot.GetComponent<CameraFollow>().enabled = false;
+    }
+    public void PlayerDeadOnObstacle()
+    {
         _uiManager.ShowRestartButton();
         cameraPivot.GetComponent<CameraFollow>().enabled = false;
     }
@@ -105,6 +100,7 @@ public class GameController : MonoBehaviour
 
         if (platformCount > 0)
         {
+            _uiManager.UpdateMnozhitel(mnozhitel);
             StartCoroutine(BonusLevelController(platformCount));
         }
         else
@@ -134,27 +130,9 @@ public class GameController : MonoBehaviour
         StartCoroutine(MovePlayer(new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z + 2f)));
         cameraPivot.position = new Vector3(finish.position.x, cameraPivot.position.y, finish.position.z + 2f);
     }
-    public void UpdateBalonScale(float platformCount)
-    {
-        if (platformCount == 0)
-        { balonMid.gameObject.SetActive(false); }
-        else
-        if (platformCount == 1)
-        { balonMid.gameObject.SetActive(true); }
-        else
-        { 
-            balonMid.localScale = new Vector3(balonMid.localScale.x, StartBalonScale * platformCount, balonMid.localScale.z);
-            balonMid.position = new Vector3(balonMid.position.x, 1 + platformCount * 0.03f, balonMid.position.z);
-            balonUp.localScale = new Vector3(balonUp.localScale.x, 200f/platformCount, balonUp.localScale.z);
-            balonDown.localScale = new Vector3(balonUp.localScale.x, 200f/platformCount, balonUp.localScale.z);
-        }
-    }
-    public void SmokeUnderPlayer()
-    {
-        smoke.Play();
-    }
     void BonusLevelEnd()
     {
+        _uiManager.DisableMnozhitel();
         _uiManager.ShowWinPanel(mnozhitel);
         playerAnimator.SetBool("win", true);
         PlayWinParticles();
@@ -164,33 +142,35 @@ public class GameController : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(new Vector3(waterShlang.transform.position.x, waterShlang.transform.position.y, waterShlang.transform.position.z), waterShlang.transform.forward, out hit);
         if (hit.collider == prevCol&&hit.collider!=null)
-            kol++;
-        else kol = 0;
-        if(kol>=120&&hit.collider!=null&&hit.collider.transform.GetComponentInChildren<ParticleSystem>().isPlaying)
+            tushenieElapsedTime+=Time.unscaledDeltaTime;
+        else tushenieElapsedTime = 0;
+
+        if(tushenieElapsedTime>=2f&&hit.collider!=null&&hit.collider.transform.GetComponentInChildren<ParticleSystem>().isPlaying)
         {
             hit.collider.transform.GetComponentInChildren<ParticleSystem>().Stop();
-            mnozhitel++; 
-            kol = 0;
+            mnozhitel++;
+            _uiManager.UpdateMnozhitel(mnozhitel);
+            tushenieElapsedTime = 0;
         }
         prevCol = hit.collider;
     }
-    private float NewCamPos(float rotationX,float camPosY)
+    private float NewCamPos(float rotationX,float camPosY,float sens)
     {
         if (rotationX > -30f)
         {
-            camPosY += 4 * 0.05f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+            camPosY += sens*4 * 0.05f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
         }
         if (rotationX <= -30f && rotationX > -45f)
         {
-            camPosY += 4 * 0.065f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+            camPosY +=sens*4 * 0.065f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
         }
         if (rotationX <= -30f && rotationX > -60f)
         {
-            camPosY += 4 * 0.085f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+            camPosY +=sens*4 * 0.085f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
         }
         if (rotationX <= -60f)
         {
-            camPosY += 4 * 0.1f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+            camPosY +=sens*4 * 0.1f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
         }
         return camPosY;
     }
@@ -210,7 +190,7 @@ public class GameController : MonoBehaviour
         float endPlatforms = 0;
 
         float elapsedtime = 0;
-        float _duration = platforms/2f;
+        float _duration = platforms;
        
         float camPosY = cameraPivot.position.y;
 
@@ -218,36 +198,13 @@ public class GameController : MonoBehaviour
         while (elapsedtime<_duration)
         {
             UpdateMouseDrag();
-           
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Moved)
-                {
-                    Vector2 pos = touch.deltaPosition;
-                    rotationX += -0.5f * pos.y * touch.deltaTime;
-                    rotationY += 0.25f * pos.x * touch.deltaTime;
-
-                    rotationY = Mathf.Clamp(rotationY, -leftRightRot, leftRightRot);
-                    rotationX = Mathf.Clamp(rotationX, -65f, 0f);
-
-                    camPosY = NewCamPos(rotationX, camPosY);
-                    camPosY = Mathf.Clamp(camPosY, downPosCam, 11f);
-                    
-                }
-            }
             if (mouseDrag)
-            {
-                rotationY += 4f * (Input.mousePosition.x - prevMousePos.x) * Time.unscaledDeltaTime;
-                rotationX += -2f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
-                
-                rotationY = Mathf.Clamp(rotationY, -leftRightRot, leftRightRot);
-                rotationX = Mathf.Clamp(rotationX, -65f, 0f);
-                
-                camPosY = NewCamPos(rotationX, camPosY);
-                camPosY = Mathf.Clamp(camPosY, downPosCam, 11f);
-            }
+            { MouseControl(ref rotationX, ref rotationY, ref camPosY); }
 
+            TouchControl(ref rotationX, ref rotationY, ref camPosY);
+
+            ClampfControl(ref rotationX, ref rotationY, ref camPosY, leftRightRot, downPosCam);
+            
             prevMousePos = Input.mousePosition;
 
             player.platforms = (startPlatforms - endPlatforms) * (1 - elapsedtime/_duration);
@@ -262,16 +219,36 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        UpdateBalonScale(0);
-
-        for(int i=0;i<31;i++)
-        {
-            RayCheck();
-            yield return null;
-        }
+        player.platforms = 0;
 
         waterShlang.Stop();
         BonusLevelEnd();
+    }
+    private void MouseControl(ref float rotationX,ref float rotationY,ref float camPosY)
+    {
+        rotationY += 4f / 3f * (Input.mousePosition.x - prevMousePos.x) * Time.unscaledDeltaTime;
+        rotationX += -2f / 3f * (Input.mousePosition.y - prevMousePos.y) * Time.unscaledDeltaTime;
+        camPosY = NewCamPos(rotationX, camPosY, 1f / 3f);
+    }
+    private void TouchControl(ref float rotationX, ref float rotationY, ref float camPosY)
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Moved)
+            {
+                Vector2 pos = touch.deltaPosition;
+                rotationX += -0.5f * pos.y * touch.deltaTime;
+                rotationY += 0.25f * pos.x * touch.deltaTime;
+                camPosY = NewCamPos(rotationX, camPosY, 1f / 8f);
+            }
+        }
+    }
+    private void ClampfControl(ref float rotationX, ref float rotationY, ref float camPosY,float leftRightRot,float downPosCam)
+    {
+        rotationY = Mathf.Clamp(rotationY, -leftRightRot, leftRightRot);
+        rotationX = Mathf.Clamp(rotationX, -65f, 0f);
+        camPosY = Mathf.Clamp(camPosY, downPosCam, 11f);
     }
     
     private IEnumerator MovePlayer(Vector3 endPos)
@@ -288,6 +265,4 @@ public class GameController : MonoBehaviour
         }
         player.transform.position = endPos;
     }
-   
-   
 }

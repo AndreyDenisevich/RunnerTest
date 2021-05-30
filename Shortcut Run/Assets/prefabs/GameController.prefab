@@ -43,19 +43,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 638355c498f8d104da36281eac5526ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterSplash: {fileID: 5382018624643821729, guid: 5fa6629c261181a4ea961c26d80a7019,
+  waterSplash: {fileID: 2693409256499565914, guid: d389a4dd78fdf0b4394d4d6d9653a2fe,
     type: 3}
   waterShlang: {fileID: 0}
-  smoke: {fileID: 0}
   winParticles:
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   _uiManager: {fileID: 0}
   _audioController: {fileID: 0}
-  balonMid: {fileID: 0}
-  balonUp: {fileID: 0}
-  balonDown: {fileID: 0}
-  tower: {fileID: 1564277427775316784, guid: 1dc637b2f9dc7b94897e874751226b16, type: 3}
   playerAnimator: {fileID: 0}
   enemies:
   - {fileID: 0}
@@ -65,6 +61,3 @@ MonoBehaviour:
   player: {fileID: 0}
   finish: {fileID: 0}
   cameraPivot: {fileID: 0}
-  fire:
-    serializedVersion: 2
-    m_Bits: 256

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class Uimanager : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private Animator restartBtnAnimator;
     [SerializeField] private Animator winPanelAnimator;
+    [SerializeField] private Animator upgradeButtonAnimator;
 
     [SerializeField] private GameController _gameController;
 
@@ -17,10 +19,15 @@ public class Uimanager : MonoBehaviour
 
     [SerializeField] private GameObject nxtLevel;
     [SerializeField] private GameObject restartLevel;
+    [SerializeField] private GameObject TapToPlayButton;
 
     [SerializeField] private Text coinsCount;
     [SerializeField] private Text timer;
     [SerializeField] private Text racePos;
+
+    [SerializeField] private Text currentLevelOnUpgradeButton;
+    [SerializeField] private Text currentPercentageText;
+    [SerializeField] private TextMeshProUGUI upgradeCostOnButton;
 
     [SerializeField] private Text[] leaderboardPositions;
 
@@ -29,31 +36,51 @@ public class Uimanager : MonoBehaviour
     private int coins;
     void Start()
     {
-        string sceneName = PlayerPrefs.GetString("CurrentLevel");
+        string sceneName = PlayerPrefs.GetString("CurrentLevel","1");
         if (sceneName != SceneManager.GetActiveScene().name)
             SceneManager.LoadScene(sceneName);
+        coinsCount.text=PlayerPrefs.GetInt("allCoins",0).ToString();
+        InitializeUpgradeButton();
         timer.text = "Tap To Play";
     }
 
-    // Update is called once per frame
-    void Update()
+    public void InitializeUpgradeButton()
     {
-        
+        int curLvl = PlayerPrefs.GetInt("WaterLevel", 1);
+        currentPercentageText.text = "(+" + ((curLvl - 1) * 10).ToString() + "%)";
+        currentLevelOnUpgradeButton.text ="lvl "+curLvl.ToString();
+        if (curLvl >= 10)
+            upgradeCostOnButton.text = "MAX LVL";
+        else upgradeCostOnButton.text = (curLvl * 1000).ToString();
     }
     public void StartTimer()
     {
+        upgradeButtonAnimator.SetBool("isHidden", true);
+        coinsCount.text = "0";
+        _gameController.StartGame();
+        TapToPlayButton.SetActive(false);
         StartCoroutine(Timer());
     }
-    public void AddCoin()
+    public void AddCoins()
     {
-        coins++;
-        coinsCount.text = coins + "";
+        coins+=5;
+        coinsCount.text = coins.ToString();
+    }
+    public void UpdateMnozhitel(int mnozhitel)
+    {
+        timer.enabled = true;
+        timer.text = "x" + mnozhitel;
+    }
+    public void DisableMnozhitel()
+    {
+        timer.enabled = false;
     }
     public void ShowWinPanel(int mnozhitel)
     {
         restartLevel.SetActive(false);
         WinCoinsText.text = WinCoinsText.text + coins+" coins"+" x"+mnozhitel;
         winPanelAnimator.enabled = true;
+        PlayerPrefs.SetInt("allCoins", PlayerPrefs.GetInt("allCoins", 0) + coins*mnozhitel);
     }
     public void ShowLosePanel()
     {
@@ -61,6 +88,7 @@ public class Uimanager : MonoBehaviour
         WinText.text = "You Lose!";
         WinCoinsText.text = WinCoinsText.text + coins + " coins";
         winPanelAnimator.enabled = true;
+        PlayerPrefs.SetInt("allCoins", PlayerPrefs.GetInt("allCoins", 0) + coins);
     }
     public void ShowRestartButton()
     {
@@ -104,9 +132,23 @@ public class Uimanager : MonoBehaviour
     }
     public void RestartGame()
     {
-        
-        Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void UpgradeWater()
+    {
+        int currentLevel = PlayerPrefs.GetInt("WaterLevel", 1);
+        int upgradeCost = currentLevel * 1000;
+        int allCoins = PlayerPrefs.GetInt("allCoins", 0);
+        
+        if (allCoins>=upgradeCost&&currentLevel<10)
+        {
+            PlayerPrefs.SetInt("WaterLevel", currentLevel + 1);
+            allCoins -= upgradeCost;
+            PlayerPrefs.SetInt("allCoins", allCoins);
+            coinsCount.text = allCoins.ToString();
+        }
+        InitializeUpgradeButton();
     }
     public void UpdateRacePosition(int pos)
     {
@@ -134,7 +176,7 @@ public class Uimanager : MonoBehaviour
     }
     private IEnumerator Timer()
     {
-        for(int i = 0;i<3;i++)
+        for(int i = 2;i>=0;i--)
         {
             timer.text = i + 1 + "";
             yield return new WaitForSeconds(1);
